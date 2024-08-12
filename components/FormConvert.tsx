@@ -5,7 +5,7 @@ import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 
-export default function Home() {
+export default function FormConvert() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
