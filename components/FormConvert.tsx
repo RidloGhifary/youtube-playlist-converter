@@ -11,6 +11,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Header from "./Header";
 
+interface FormConvertProps {
+  redirectUrl: string;
+}
+
 const spotifyPlaylistRegex =
   /^https:\/\/open\.spotify\.com\/playlist\/[a-zA-Z0-9]+(\?si=[a-zA-Z0-9]+)?$/;
 const youtubePlaylistRegex =
@@ -29,7 +33,7 @@ const schema = yup
   })
   .required();
 
-export default function FormConvert() {
+export default function FormConvert({ redirectUrl }: FormConvertProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -56,9 +60,7 @@ export default function FormConvert() {
     if (!code) {
       router.push(
         process.env.AUTHORIZE_SPOTIFY_URL ||
-          `https://accounts.spotify.com/authorize?response_type=code&client_id=e9ba95de74de471891bd4e98c73b66ef&scope=playlist-modify-private playlist-modify-public&redirect_uri=${
-            process.env.SPOTIFY_REDIRECT_URI ?? "http://localhost:3000"
-          }`
+          `https://accounts.spotify.com/authorize?response_type=code&client_id=e9ba95de74de471891bd4e98c73b66ef&scope=playlist-modify-private playlist-modify-public&redirect_uri=${redirectUrl}`
       );
     }
 
@@ -132,9 +134,7 @@ export default function FormConvert() {
   const authorizeSpotify = () => {
     router.push(
       process.env.AUTHORIZE_SPOTIFY_URL ||
-        `https://accounts.spotify.com/authorize?response_type=code&client_id=e9ba95de74de471891bd4e98c73b66ef&scope=playlist-modify-private playlist-modify-public&redirect_uri=${
-          process.env.SPOTIFY_REDIRECT_URI ?? "http://localhost:3000"
-        }`
+        `https://accounts.spotify.com/authorize?response_type=code&client_id=e9ba95de74de471891bd4e98c73b66ef&scope=playlist-modify-private playlist-modify-public&redirect_uri=${redirectUrl}`
     );
   };
 
