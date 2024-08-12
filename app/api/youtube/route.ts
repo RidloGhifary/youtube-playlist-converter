@@ -7,10 +7,7 @@ export async function GET(request: Request) {
   const apiKey = process.env.YOUTUBE_API_KEY;
 
   if (!playlistId) {
-    return NextResponse.json(
-      { error: "Playlist ID is required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Playlist ID is required" });
   }
 
   try {
@@ -28,14 +25,8 @@ export async function GET(request: Request) {
 
     return NextResponse.json(response.data);
   } catch (error: any) {
-    console.log("🚀 ~ GET ~ error:", error);
-    return NextResponse.json(
-      {
-        error: error.message || "Something went wrong",
-      },
-      {
-        status: 500,
-      }
-    );
+    return NextResponse.json({
+      error: error?.message || "Something went wrong!",
+    });
   }
 }
