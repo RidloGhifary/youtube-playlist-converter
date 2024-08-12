@@ -1,9 +1,18 @@
+"use client";
+
 import Button from "@/components/Button";
 import Container from "@/components/Container";
 import Header from "@/components/Header";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Hero() {
+  const router = useRouter();
+
+  const onClick = () => {
+    router.push("#tutorial");
+  };
+
   return (
     <div className="relative w-full min-h-screen grid place-content-center">
       <Container>
@@ -38,7 +47,9 @@ export default function Hero() {
           </div>
         </div>
 
-        <Button className="absolute bottom-16 left-1/2 translate-x-[-50%]">
+        <Button
+          onClick={onClick}
+          className="absolute bottom-16 left-1/2 translate-x-[-50%]">
           How to?
         </Button>
       </Container>

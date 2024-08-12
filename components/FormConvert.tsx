@@ -4,6 +4,30 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
+import Container from "./Container";
+import Button from "./Button";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import Header from "./Header";
+
+const spotifyPlaylistRegex =
+  /^https:\/\/open\.spotify\.com\/playlist\/[a-zA-Z0-9]+(\?si=[a-zA-Z0-9]+)?$/;
+const youtubePlaylistRegex =
+  /^https:\/\/youtube\.com\/playlist\?list=[a-zA-Z0-9_-]+(&si=[a-zA-Z0-9_-]+)?$/;
+
+const schema = yup
+  .object({
+    youtube: yup
+      .string()
+      .required()
+      .matches(youtubePlaylistRegex, "Invalid YouTube playlist URL"),
+    spotify: yup
+      .string()
+      .required()
+      .matches(spotifyPlaylistRegex, "Invalid Spotify playlist URL"),
+  })
+  .required();
 
 export default function FormConvert() {
   const searchParams = useSearchParams();
@@ -13,8 +37,21 @@ export default function FormConvert() {
   const [loading, setLoading] = useState<boolean>(false);
   const [code, setCode] = useState<string | null>(searchParams.get("code"));
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<{ youtube: string; spotify: string }>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      youtube: "",
+      spotify: "",
+    },
+  });
+
+  const onSubmit: SubmitHandler<{ youtube: string; spotify: string }> = async (
+    data
+  ) => {
     if (!code) {
       router.push(
         process.env.AUTHORIZE_SPOTIFY_URL ||
@@ -25,8 +62,8 @@ export default function FormConvert() {
     setLoading(true);
 
     try {
-      let youtubeLink = e.currentTarget.youtube.value;
-      let spotifyLink = e.currentTarget.spotify.value;
+      let youtubeLink = data.youtube;
+      let spotifyLink = data.spotify;
 
       if (!youtubeLink || !spotifyLink)
         return toast.error("All fields are required");
@@ -102,34 +139,95 @@ export default function FormConvert() {
   }, [code, authorizeSpotify]);
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="youtube"
-          id="youtube"
-          placeholder="Playlist youtube link"
-          disabled={loading}
-        />
-        <input
-          type="text"
-          name="spotify"
-          id="spotify"
-          placeholder="Playlist spotify link"
-          disabled={loading}
-        />
-        <button type="submit" disabled={loading}>
-          Add Tracks
-        </button>
-      </form>
-      {!code && <button onClick={authorizeSpotify}>Authorize Spotify</button>}
-      {result && (
-        <ul>
-          {result.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <Container>
+      <div className="w-full py-[200px]">
+        <div className="w-full text-center md:max-w-[70%] lg:max-w-[60%] mx-auto mb-24">
+          <Header
+            title="Convert your youtube playlist into Spotify"
+            subtitle="Follow the steps below to convert your favorite songs from YouTube to Spotify."
+          />
+        </div>
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 w-full gap-6"
+          id="convert">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4 min-w-full">
+            <div className="flex flex-col gap-2">
+              <div className="w-full flex justify-between items-center">
+                <label htmlFor="youtube" className="text-white text-sm">
+                  Youtube playlist url
+                </label>
+                {errors.youtube && (
+                  <span className="text-red-500 text-xs">
+                    {errors.youtube?.message?.toString()}
+                  </span>
+                )}
+              </div>
+              <input
+                {...register("youtube")}
+                type="text"
+                id="youtube"
+                disabled={loading}
+                placeholder="https://youtube.com/playlist/playlistId"
+                className="w-full rounded-md bg-transparent border border-white p-3 outline-none ring-0 disabled:opacity-70 disabled:cursor-not-allowed"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="w-full flex justify-between items-center">
+                <label htmlFor="spotify" className="text-white text-sm">
+                  Spotify playlist url
+                </label>
+                {errors.spotify && (
+                  <span className="text-red-500 text-xs">
+                    {errors.spotify?.message?.toString()}
+                  </span>
+                )}
+              </div>
+              <input
+                {...register("spotify")}
+                type="text"
+                id="spotify"
+                disabled={loading}
+                placeholder="https://open.spotify.com/playlist/playlistId"
+                className="w-full rounded-md bg-transparent border border-white p-3 outline-none ring-0 disabled:opacity-70 disabled:cursor-not-allowed"
+              />
+            </div>
+            <div className="flex gap-4 items-center">
+              <Button disabled={loading} type="submit">
+                Convert
+              </Button>
+              {!code && (
+                <Button
+                  disabled={loading}
+                  type="button"
+                  className="border-none bg-[#3cd868] text-stone-950"
+                  onClick={authorizeSpotify}>
+                  Authorize Spotify
+                </Button>
+              )}
+            </div>
+          </form>
+          <div
+            className={`p-4 flex flex-col gap-4 mt-3 ${
+              !result && "bg-slate-500/20 rounded-md"
+            }`}>
+            {result ? (
+              <ol className="list-disc space-y-3">
+                {result.map((item) => (
+                  <li
+                    key={item}
+                    className="p-3 border rounded-md w-full truncate">
+                    Added {item}
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p className="text-center">Your result will be here!</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </Container>
   );
 }
