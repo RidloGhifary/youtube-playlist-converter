@@ -7,10 +7,7 @@ export async function GET(request: Request) {
   const access_token = url.searchParams.get("access_token");
 
   if (titles.length === 0) {
-    return NextResponse.json(
-      { error: "At least one title is required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "At least one title is required" });
   }
 
   try {
@@ -51,10 +48,7 @@ export async function POST(request: Request) {
       process.env.SPOTIFY_REDIRECT_URI || "http://localhost:3000";
 
     if (!code) {
-      return NextResponse.json(
-        { error: "Something went wrong!" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Something went wrong!" });
     }
 
     const params = new URLSearchParams();
@@ -77,16 +71,13 @@ export async function POST(request: Request) {
 
     const { access_token } = data;
     if (!access_token) {
-      return NextResponse.json(
-        { error: "Failed to obtain access token" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Failed to obtain access token" });
     }
 
     return NextResponse.json({ access_token });
   } catch (error: any) {
     return NextResponse.json(
-      { error: error.message || "Something went wrong" },
+      { error: error?.message || "Something went wrong" },
       { status: error.response?.status || 500 }
     );
   }
