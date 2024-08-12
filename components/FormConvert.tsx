@@ -56,7 +56,9 @@ export default function FormConvert() {
     if (!code) {
       router.push(
         process.env.AUTHORIZE_SPOTIFY_URL ||
-          "https://accounts.spotify.com/authorize?response_type=code&client_id=e9ba95de74de471891bd4e98c73b66ef&scope=playlist-modify-private playlist-modify-public&redirect_uri=http://localhost:3000"
+          `https://accounts.spotify.com/authorize?response_type=code&client_id=e9ba95de74de471891bd4e98c73b66ef&scope=playlist-modify-private playlist-modify-public&redirect_uri=${
+            process.env.SPOTIFY_REDIRECT_URI ?? "http://localhost:3000"
+          }`
       );
     }
 
@@ -130,7 +132,9 @@ export default function FormConvert() {
   const authorizeSpotify = () => {
     router.push(
       process.env.AUTHORIZE_SPOTIFY_URL ||
-        "https://accounts.spotify.com/authorize?response_type=code&client_id=e9ba95de74de471891bd4e98c73b66ef&scope=playlist-modify-private playlist-modify-public&redirect_uri=http://localhost:3000"
+        `https://accounts.spotify.com/authorize?response_type=code&client_id=e9ba95de74de471891bd4e98c73b66ef&scope=playlist-modify-private playlist-modify-public&redirect_uri=${
+          process.env.SPOTIFY_REDIRECT_URI ?? "http://localhost:3000"
+        }`
     );
   };
 
