@@ -41,6 +41,7 @@ export default function FormConvert() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<{ youtube: string; spotify: string }>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -118,6 +119,7 @@ export default function FormConvert() {
 
       toast.success("Playlist inserted successfully!");
       setResult(titles);
+      reset();
     } catch (error) {
       toast.error("Something went wrong!");
     } finally {
@@ -168,8 +170,12 @@ export default function FormConvert() {
                 {...register("youtube")}
                 type="text"
                 id="youtube"
-                disabled={loading}
-                placeholder="https://youtube.com/playlist/playlistId"
+                disabled={loading || !code}
+                placeholder={
+                  !code
+                    ? "Authorized spotify first"
+                    : "https://youtube.com/playlist/playlistId"
+                }
                 className="w-full rounded-md bg-transparent border border-white p-3 outline-none ring-0 disabled:opacity-70 disabled:cursor-not-allowed"
               />
             </div>
@@ -188,22 +194,27 @@ export default function FormConvert() {
                 {...register("spotify")}
                 type="text"
                 id="spotify"
-                disabled={loading}
-                placeholder="https://open.spotify.com/playlist/playlistId"
+                disabled={loading || !code}
+                placeholder={
+                  !code
+                    ? "Authorize spotify first"
+                    : "https://open.spotify.com/playlist/playlistId"
+                }
                 className="w-full rounded-md bg-transparent border border-white p-3 outline-none ring-0 disabled:opacity-70 disabled:cursor-not-allowed"
               />
             </div>
             <div className="flex gap-4 items-center">
-              <Button disabled={loading} type="submit">
-                Convert
-              </Button>
-              {!code && (
+              {!code ? (
                 <Button
                   disabled={loading}
                   type="button"
                   className="border-none bg-[#3cd868] text-stone-950"
                   onClick={authorizeSpotify}>
-                  Authorize Spotify
+                  {loading ? "Loading..." : "Authorize Spotify"}
+                </Button>
+              ) : (
+                <Button disabled={loading} type="submit">
+                  {loading ? "Loading..." : "Convert"}
                 </Button>
               )}
             </div>
