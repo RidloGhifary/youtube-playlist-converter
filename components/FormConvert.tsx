@@ -144,7 +144,7 @@ export default function FormConvert() {
         <div className="w-full text-center md:max-w-[70%] lg:max-w-[60%] mx-auto mb-24">
           <Header
             title="Convert your youtube playlist into Spotify"
-            subtitle="Follow the steps below to convert your favorite songs from YouTube to Spotify."
+            subtitle="Authorized your spotify account to use this app"
           />
         </div>
         <div
