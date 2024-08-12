@@ -5,7 +5,8 @@ export default function Footer() {
     <Container>
       <footer className="text-center p-6">
         <p className="text-sm text-slate-500 hover:text-white">
-          copyright &copy; {new Date().getFullYear()} All Rights Reserved
+          copyright &copy; {new Date().getFullYear()} All Rights Reserved,
+          Property of @Ridlo_Ghifary
         </p>
       </footer>
     </Container>
