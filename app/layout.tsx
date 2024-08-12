@@ -3,6 +3,7 @@ import { Nunito } from "next/font/google";
 import "./globals.css";
 
 import ToasterProvider from "@/providers/Toaster";
+import Footer from "@/components/Footer";
 
 const font = Nunito({ subsets: ["latin"] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body className={`${font.className} bg-stone-950 text-white`}>
         <ToasterProvider />
         {children}
+        <Footer />
       </body>
     </html>
   );
