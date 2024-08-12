@@ -1,9 +1,11 @@
 import Hero from "@/components/Hero";
+import Tutorial from "@/components/Tutorial";
 
 export default function Home() {
   return (
-    <div className="relative w-full min-h-screen grid place-content-center">
+    <div className="w-full min-h-screen grid place-content-center">
       <Hero />
+      <Tutorial />
     </div>
   );
 }
