@@ -20,7 +20,7 @@ export default function Tutorial() {
       <Container>
         <div className="w-full grid grid-cols-1 md:grid-cols-2 justify-center items-center gap-x-10">
           <ReactPlayer
-            url="/tutorial.mp4"
+            url="/video-tutorial.mp4"
             controls
             light={true}
             width={"100%"}
